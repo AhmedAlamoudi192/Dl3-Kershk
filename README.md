@@ -4,7 +4,11 @@ This is a project that aims to provide a rebust system for managing restaurants 
 the idea is to keep an open source content managment system for working with the latest and greatest restaurants that deliver to KFUPM.
 
 ## installation
-run the following in the root directory
+run the following commands in the root directory to install the project
 ```
-npm run i && npm run dev
+npm install
+```
+then to run the following commands to run the app
+```
+npm run dev
 ```
