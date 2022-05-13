@@ -1,5 +1,4 @@
-const { default: mongoose } = require("mongoose");
-var {Restaurant} = require("../models/restaurants-model");
+const  {Restaurant} = require("../models/index-models");
 module.exports = {
   postRes: function (req, res) {
     let rest = Restaurant ({

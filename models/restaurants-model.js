@@ -1,14 +1,5 @@
 const mongoose = require("mongoose");
-const database=mongoose.createConnection(
-  "mongodb://localhost:27017/Dl3-Kershk"
-);
 
-database.on("error", (err) => {
-  console.log("failed to connect to db " + err);
-});
-database.on("connected", () => {
-  console.log("connected to db successfully");
-});
 
      const Restaurant_Schema = new mongoose.Schema({
 
@@ -34,5 +25,5 @@ database.on("connected", () => {
     )
 
 module.exports={
-    Restaurant : database.model('Restaurant', Restaurant_Schema),
+    Restaurant : Restaurant_Schema,
   }
