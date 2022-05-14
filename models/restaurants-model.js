@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
       rating:{},
     
       aveRating:Number,
+      
       numberOfVoters:Number,
     },
     { timestamps: { createdAt: "created_at" } }

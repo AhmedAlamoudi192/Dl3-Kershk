@@ -1,40 +1,52 @@
-const { jwt } = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { User } = require("../models/index-models");
-const mongoose = require("mongoose");
 module.exports = {
   postRegister: (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    let hashed = "";
+    const confirmPassword = req.body.confirm_password;
+    if (confirmPassword == undefined) {
+      res.json({ err: "you must confirm your password" });
+    }
+    if (password !== confirmPassword) {
+      res.json({ err: "passwords must match" });
+    }
     crypto.pbkdf2(
       password,
       process.env.SALT_SECRET,
       310000,
       32,
       "sha256",
-      (err, pass) => (hashed = pass.toString("hex"))
-    );
-    let user = User({
-      username: username,
-      password: hashed,
-      API_Key: jwt.sign(username, process.env.TOKEN_SECRET, {
-        expiresIn: "1h",
-      }),
-    });
+      (err, pass) => {
+        if (err) {
+          res.json({ err: err });
+        }
+        let user = User({
+          username: username,
+          password: pass.toString("hex"),
+          API_Key: jwt.sign({ data: username }, process.env.TOKEN_SECRET, {
+            expiresIn: "1h",
+          }),
+        });
 
-    User.insertMany([user])
-      .then((data) =>
-        res.status(201).json({ msg: "successfully added", data: data })
-      )
-      .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
+        User.insertMany([user])
+          .then((data) =>
+            res
+              .status(201)
+              .json({ msg: "successfully added", API_KEY: data.API_Key })
+          )
+          .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
+      }
+    );
   },
-  postLogin: (req, res) => {
+  postLogin: async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
+    const user_id = await User.exists({ username: username });
     //look for the user in the database
-    if (username == "ahmed") {
-      const API_Key = "key here";
-      const hashedPass = "";
+    if (user_id != undefined) {
+      const DBUser = await User.findById(user_id._id);
       crypto.pbkdf2(
         password,
         process.env.SALT_SECRET,
@@ -47,16 +59,38 @@ module.exports = {
             res.json({ err: err });
           }
           // if the password is incorrect
-          if (hashedPass != hashedPassword.toString("hex")) {
+          if (DBUser.password != hashedPassword.toString("hex")) {
             res.json({
               message: "Incorrect username or password.",
             });
           }
-          res.json({ msg: "user found", API_Key: API_Key });
+          // if all is good update the jwt token and send it back
+          const new_key = jwt.sign(
+            { data: username },
+            process.env.TOKEN_SECRET,
+            {
+              expiresIn: "1h",
+            }
+          );
+          User.findByIdAndUpdate(user_id, { API_key: new_key });
+          res.json({ msg: "user found", API_key: new_key });
         }
       );
     } else {
-      res.json({ message: "User Not Found" });
+      res.json({
+        message: "Incorrect username or password.",
+      });
     }
+  },
+  verfiyAuth: async (req, res, next) => {
+    const api_key = req.query.API_KEY;
+    jwt.verify(api_key, process.env.TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        res.status(401).json({ msg: "user not verified" });
+      } else {
+        req.locals = decoded
+        next();
+      }
+    });
   },
 };
