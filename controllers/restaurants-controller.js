@@ -16,8 +16,9 @@ module.exports = {
     .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }))
   },
   getRes: function (req, res) {
-    const check = req.query.query
-    Restaurant.find()
+    const searchFor = req.query.query
+    searchFlag = searchFor !== undefined
+    Restaurant.find(searchFlag?{suggested_data:{RestaurantName:searchFor}}:{})
     .then( data => res.status(200).json({'data':data,'searchFor':check}))
     .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }))
   },
