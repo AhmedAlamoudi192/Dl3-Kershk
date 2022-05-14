@@ -33,13 +33,22 @@ module.exports = {
   
   
   putRes: function (req, res){
+    let rest = Restaurant ({
+      RestaurantName:req.body.RestaurantName,
+      menu:req.body.menu,
+      category:req.body.category,
+      contact: req.body.contact,
+      delivers:req.body.delivers,
+      timestamps: { createdAt: "created_at" }
+      
+    })
 
   },
   deleteRes: function (req, res){
-    let filter4 = {RestaurantName:"Rayk" }
-    Restaurant.deleteMany(filter4)
-    .then( () => console.log("Deleted") )
-    .catch( err => console.log("Error: ", err) )
+    const id = req.params.id
+    Restaurant.deleteMany(id)
+    .then( () => res.status(200).json({'data':"Deleted"}) )
+    .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }) )
 
   },
   chooseRes: function (req, res){
