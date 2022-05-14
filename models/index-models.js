@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Restaurant } = require("./restaurants-model");
 const { User } = require("./users-model");
+const { Restaurant_Pullreq } = require("./restaurants-pull-request-model");
 const database = mongoose.createConnection(
   "mongodb://localhost:27017/Dl3-Kershk"
 );
@@ -14,4 +15,5 @@ database.on("connected", () => {
 module.exports = {
   Restaurant:database.model('Restaurant',Restaurant),
   User:database.model('User',User),
+  RestPullReq:database.model('Restaurant_pull_requests',Restaurant_Pullreq),
 };

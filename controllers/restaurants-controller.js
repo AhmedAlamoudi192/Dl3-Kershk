@@ -7,9 +7,6 @@ module.exports = {
       category:req.body.category,
       contact: req.body.contact,
       delivers:req.body.delivers,
-      rating:req.body.rating,
-      aveRating:req.body.aveRating,
-      numberOfVoters:req.body.numberOfVoters,
       timestamps: { createdAt: "created_at" }
       
     })
@@ -33,6 +30,7 @@ module.exports = {
   
   
   putRes: function (req, res){
+    const id = req.params.id
     let rest = Restaurant ({
       RestaurantName:req.body.RestaurantName,
       menu:req.body.menu,
@@ -40,13 +38,13 @@ module.exports = {
       contact: req.body.contact,
       delivers:req.body.delivers,
       timestamps: { createdAt: "created_at" }
-      
     })
+    Restaurant.findByIdAndUpdate(id,rest)
 
   },
   deleteRes: function (req, res){
     const id = req.params.id
-    Restaurant.deleteMany(id)
+    Restaurant.findByIdAndDelete(id)
     .then( () => res.status(200).json({'data':"Deleted"}) )
     .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }) )
 
@@ -57,9 +55,9 @@ module.exports = {
     .then( data =>{
       let maxLimit=data.length
       let rand = Math.floor(Math.random() * maxLimit);
-      console.log("Data found: ", data[rand])
+      res.json({"Data found: ": data[rand]})
     })
-    .catch( err => console.log("Error: ", err) )
+    .catch( err => res.json({"Error: ": err}) )
 
   }
 };
