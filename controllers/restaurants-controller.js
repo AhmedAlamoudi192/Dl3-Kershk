@@ -31,4 +31,33 @@ module.exports = {
     .catch( err => res.status(404).json({"msg: ": "ERROR: document not found"}))
   },
   
+  
+  putRes: function (req, res){
+
+  },
+  deleteRes: function (req, res){
+    let filter4 = {RestaurantName:"Rayk" }
+    Restaurant.deleteMany(filter4)
+    .then( () => console.log("Deleted") )
+    .catch( err => console.log("Error: ", err) )
+
+  },
+  chooseRes: function (req, res){
+    
+    Restaurant.find()
+    .then( data =>{
+      let maxLimit=data.length
+      let rand = Math.floor(Math.random() * maxLimit);
+      console.log("Data found: ", data[rand])
+    })
+    .catch( err => console.log("Error: ", err) )
+
+  }
 };
+
+
+
+
+
+
+
