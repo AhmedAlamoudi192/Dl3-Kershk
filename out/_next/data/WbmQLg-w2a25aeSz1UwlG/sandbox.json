@@ -1,0 +1,1 @@
+{"pageProps":{"markdoc":{"content":{"$$mdtype":"Tag","name":"Document","attributes":{"source":"---\ntitle: Sandbox\n---\n\n{% sandbox /%}\n"},"children":[{"$$mdtype":"Tag","name":"Sandbox","attributes":{},"children":[]}]},"frontmatter":{"title":"Sandbox"},"file":{"path":"/sandbox.md"}}},"__N_SSG":true}

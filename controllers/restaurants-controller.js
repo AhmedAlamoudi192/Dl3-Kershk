@@ -88,7 +88,7 @@ module.exports = {
       .then(() => res.status(200).json({ data: "Deleted" }))
       .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
   },
-  chooseRes: function (req, res) {
+  chooseRes:function (req, res) {
     Restaurant.find()
       .then((data) => {
         let maxLimit = data.length-1;
