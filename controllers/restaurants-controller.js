@@ -1,70 +1,98 @@
-const  {Restaurant} = require("../models/index-models");
+const { Restaurant } = require("../models/index-models");
 module.exports = {
   postRes: function (req, res) {
-    let rest = Restaurant ({
-      RestaurantName:req.body.RestaurantName,
-      menu:req.body.menu,
-      category:req.body.category,
+    let rest = Restaurant({
+      RestaurantName: req.body.RestaurantName,
+      menu: req.body.menu,
+      category: req.body.category,
       contact: req.body.contact,
-      delivers:req.body.delivers,
-      timestamps: { createdAt: "created_at" }
-      
-    })
-    
+      delivers: req.body.delivers,
+      timestamps: { createdAt: "created_at" },
+    });
+
     Restaurant.insertMany([rest])
-    .then( data => res.status(201).json({'msg':'successfully added','data':data}))
-    .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }))
+      .then((data) =>
+        res.status(201).json({ msg: "successfully added", data: data })
+      )
+      .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
   },
   getRes: function (req, res) {
-    const check = req.query.query
+    const check = req.query.query;
     Restaurant.find()
-    .then( data => res.status(200).json({'data':data,'searchFor':check}))
-    .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }))
+      .then((data) => res.status(200).json({ data: data, searchFor: check }))
+      .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
   },
   getIdRes: async function (req, res) {
-    const id = req.params.id
+    const id = req.params.id;
     await Restaurant.findById(id)
-    .then( data => res.status(200).json({'data':data}))
-    .catch( err => res.status(404).json({"msg: ": "ERROR: document not found"}))
+      .then((data) => res.status(200).json({ data: data }))
+      .catch((err) =>
+        res.status(404).json({ "msg: ": "ERROR: document not found" })
+      );
   },
-  
-  
-  putRes: function (req, res){
-    const id = req.params.id
-    let rest = Restaurant ({
-      RestaurantName:req.body.RestaurantName,
-      menu:req.body.menu,
-      category:req.body.category,
+
+  putRes: function (req, res) {
+    const id = req.params.id;
+    let rest = Restaurant({
+      RestaurantName: req.body.RestaurantName,
+      menu: req.body.menu,
+      category: req.body.category,
       contact: req.body.contact,
-      delivers:req.body.delivers,
-      timestamps: { createdAt: "created_at" }
-    })
-    Restaurant.findByIdAndUpdate(id,rest)
-
+      delivers: req.body.delivers,
+    });
+    Restaurant.findByIdAndUpdate(id, rest).then((i) =>
+      res
+        .status(201)
+        .json({ data: "successfully updated" })
+        .catch((err) =>
+          res.status(404).json({ "msg: ": "ERROR: document not found" })
+        )
+    );
   },
-  deleteRes: function (req, res){
-    const id = req.params.id
+  postVote: function (req, res) {
+    const id = req.params.id;
+    const rest = {
+      rating: { [req.locals.data]: 1 },
+    };
+    Restaurant.findByIdAndUpdate(id, rest, (err, i) => {
+      if (i) {
+        res.status(201).json({ data: "successfully voted" });
+      }
+      if (err) {
+        res.status(404).json({ "msg: ": "ERROR: document not found"+err });
+      }
+    });
+  },
+  deleteVote: async function (req, res) {
+    const id = req.params.id;
+    const rating = await Restaurant.find({_id:id},'rating')
+    const username = req.locals.data
+    delete rating[username]
+    let rest = {
+      rating: rating,
+    };
+    Restaurant.findByIdAndUpdate(id, rest, (err, i) => {
+      if (i) {
+        res.status(201).json({ data: "successfully removed the vote" });
+      }
+      if (err) {
+        res.status(404).json({ "msg: ": "ERROR: document not found"+err });
+      }
+    });
+  },
+  deleteRes: function (req, res) {
+    const id = req.params.id;
     Restaurant.findByIdAndDelete(id)
-    .then( () => res.status(200).json({'data':"Deleted"}) )
-    .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }) )
-
+      .then(() => res.status(200).json({ data: "Deleted" }))
+      .catch((err) => res.status(400).json({ "msg: ": "ERROR", err: err }));
   },
-  chooseRes: function (req, res){
-    
+  chooseRes: function (req, res) {
     Restaurant.find()
-    .then( data =>{
-      let maxLimit=data.length
-      let rand = Math.floor(Math.random() * maxLimit);
-      res.json({"Data found: ": data[rand]})
-    })
-    .catch( err => res.json({"Error: ": err}) )
-
-  }
+      .then((data) => {
+        let maxLimit = data.length;
+        let rand = Math.floor(Math.random() * maxLimit);
+        res.json({ "Data found: ": data[rand] });
+      })
+      .catch((err) => res.json({ "Error: ": err }));
+  },
 };
-
-
-
-
-
-
-

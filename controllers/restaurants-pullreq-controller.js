@@ -53,16 +53,45 @@ module.exports = {
             req.locals.data
           ],
           active: true,
-      timestamps: { createdAt: "created_at" }
       
     })
-    RestPullReq.findByIdAndUpdate(id,request)
+    RestPullReq.findByIdAndUpdate(id,request).then((i) =>
+    res
+      .status(201)
+      .json({ data:"successfully updated" })
+      .catch((err) =>
+        res.status(404).json({ "msg: ": "ERROR: document not found" })
+      ))
   },
   deletePullReq: function (req, res){
     const id = req.params.id
-    RestPullReq.findByIdAndDelete(id)
-    .then( () => res.status(200).json({'data':"Deleted"}) )
-    .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }) )
-
+    const voters = await RestPullReq.find({_id:id},'number_of_voters')
+    let filterdVoters = voters.filter((item)=>item==req.locals.data)
+    
+    let rest = {
+      number_of_voters: filterdVoters,
+    };
+    let request = RestPullReq ({
+        method: req.body.method,
+          suggested_data: Restaurant({
+            RestaurantName:req.body.suggested_data.RestaurantName,
+            menu:req.body.suggested_data.menu,
+            category:req.body.suggested_data.category,
+            contact: req.body.suggested_data.contact,
+            delivers:req.body.suggested_data.delivers,
+          }),
+          number_of_voters: [
+            req.locals.data
+          ],
+          active: true,
+      
+    })
+    RestPullReq.findByIdAndUpdate(id,request).then((i) =>
+    res
+      .status(201)
+      .json({ data:"successfully removed your vote" })
+      .catch((err) =>
+        res.status(404).json({ "msg: ": "ERROR: document not found" })
+      ))
   },
 };
