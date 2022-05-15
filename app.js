@@ -13,11 +13,8 @@ app.use('/', express.static('./out'))
 app.use(cors());
 app.use(express.json());
 app.use("/apiv1/auth", require("./routes/users-routes"));
-<<<<<<< Updated upstream
-=======
 app.get("/apiv1/restaurants/chooseRes",restaurantController.chooseRes);
 app.get("/apiv1/restaurants/:id", restaurantController.getIdRes);
->>>>>>> Stashed changes
 app.get("/apiv1/restaurants/", restaurantController.getRes);
 app.get("/apiv1/restaurants/chooseRes",restaurantController.chooseRes);
 app.get("/apiv1/restaurants/:id", restaurantController.getIdRes);
