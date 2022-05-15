@@ -19,8 +19,9 @@ module.exports = {
   getRes: function (req, res) {
     const searchFor = req.query.query
     searchFlag = searchFor !== undefined
+    
     Restaurant.find(searchFlag?{suggested_data:{RestaurantName:searchFor}}:{})
-    .then( data => res.status(200).json({'data':data,'searchFor':check}))
+    .then( data => res.status(200).json({'data':data,}))
     .catch( err => res.status(400).json({"msg: ": "ERROR","err":err }))
   },
   getIdRes: async function (req, res) {
@@ -90,9 +91,9 @@ module.exports = {
   chooseRes: function (req, res) {
     Restaurant.find()
       .then((data) => {
-        let maxLimit = data.length;
-        let rand = Math.floor(Math.random() * maxLimit);
-        res.json({ "Data found: ": data[rand] });
+        let maxLimit = data.length-1;
+        let rand = Math.floor(Math.random() *10% maxLimit);
+        res.json({ "Data found: ": data[4] });
       })
       .catch((err) => res.json({ "Error: ": err }));
   },
