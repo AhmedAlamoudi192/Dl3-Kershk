@@ -65,7 +65,7 @@ module.exports = {
   },
   deletePullReq: function (req, res){
     const id = req.params.id
-    const voters = await RestPullReq.find({_id:id},'number_of_voters')
+    const voters = RestPullReq.find({_id:id},'number_of_voters')
     let filterdVoters = voters.filter((item)=>item==req.locals.data)
     
     let rest = {
