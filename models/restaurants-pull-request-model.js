@@ -3,10 +3,6 @@ const mongoose = require("mongoose");
 
 const Restaurant_Pullreq_Schema = new mongoose.Schema(
   {
-    object_id: {
-      type: String,
-      immutable: true,
-    },
     method: {
       type: String,
       required: true,

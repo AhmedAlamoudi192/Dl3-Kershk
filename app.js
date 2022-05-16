@@ -23,8 +23,6 @@ app.get("/apiv1/pullreq/:id", restaurantsPullreqController.getIdPullReq);
 app.use(usersController.verfiyAuth)
 app.post("/apiv1/restaurants/vote/:id",restaurantController.postVote);
 app.delete("/apiv1/restaurants/vote/:id",restaurantController.deleteVote);
-app.use("/apiv1/pullreq", require("./routes/restaurants-pullreq-routes"));
-// app.use(restaurantsPullreqController.postPullReq);
 app.use("/apiv1/restaurants", require("./routes/restaurants-routes"));
 
 

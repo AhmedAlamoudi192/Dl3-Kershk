@@ -25,9 +25,7 @@ module.exports = {
         let user = User({
           username: username,
           password: pass.toString("hex"),
-          API_Key: jwt.sign({ data: username }, process.env.TOKEN_SECRET, {
-            expiresIn: "1h",
-          }),
+          API_Key: jwt.sign({ data: username }, process.env.TOKEN_SECRET),
         });
 
         User.insertMany([user])
@@ -64,16 +62,8 @@ module.exports = {
               message: "Incorrect username or password.",
             });
           }
-          // if all is good update the jwt token and send it back
-          const new_key = jwt.sign(
-            { data: username },
-            process.env.TOKEN_SECRET,
-            {
-              expiresIn: "1h",
-            }
-          );
-          User.findByIdAndUpdate(user_id, { API_key: new_key });
-          res.json({ msg: "user found", API_key: new_key });
+          // if all is good ,then return the jwt token           
+          res.json({ msg: "user found", API_key: DBUser.API_Key });
         }
       );
     } else {
@@ -88,7 +78,7 @@ module.exports = {
       if (err) {
         res.status(401).json({ msg: "user not verified" });
       } else {
-        req.locals = decoded
+        req.locals = decoded;
         next();
       }
     });

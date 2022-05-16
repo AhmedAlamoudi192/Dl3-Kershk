@@ -51,10 +51,18 @@ module.exports = {
         )
     );
   },
-  postVote: function (req, res) {
+  postVote: async function (req, res) {
     const id = req.params.id;
+    const RestData = await Restaurant.findById(id)
+    const username = req.locals.data
+    let newRating = RestData.rating
+    if(newRating===undefined)newRating = {}
+    newRating[username] = req.body.rating
+    const totalVotes = Object.keys(newRating).length
     const rest = {
-      rating: { [req.locals.data]: 1 },
+      rating: newRating,
+      aveRating:newRating>1?Object.values(rating).reduce((i1,i2)=>i1+i2)/totalVotes:0,
+      numberOfVoters:totalVotes
     };
     Restaurant.findByIdAndUpdate(id, rest, (err, i) => {
       if (i) {
@@ -67,11 +75,15 @@ module.exports = {
   },
   deleteVote: async function (req, res) {
     const id = req.params.id;
-    const rating = await Restaurant.find({_id:id},'rating')
+    const RestData = await Restaurant.findById(id)
+    let rating = RestData.rating
     const username = req.locals.data
     delete rating[username]
-    let rest = {
+    const totalVotes = Object.keys(rating).length
+    const rest = {
       rating: rating,
+      aveRating:rating>1?Object.values(rating).reduce((i1,i2)=>i1+i2)/totalVotes:0,
+      numberOfVoters:totalVotes
     };
     Restaurant.findByIdAndUpdate(id, rest, (err, i) => {
       if (i) {
@@ -93,7 +105,7 @@ module.exports = {
       .then((data) => {
         let maxLimit = data.length-1;
         let rand = Math.floor(Math.random() *10% maxLimit);
-        res.json({ "Data found: ": data[4] });
+        res.json({ "Data found: ": data[rand] });
       })
       .catch((err) => res.json({ "Error: ": err }));
   },

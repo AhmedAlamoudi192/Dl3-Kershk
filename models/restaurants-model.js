@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
       RestaurantName:{
         type:String,
         immutable:true,
-        required:true
+        required:true,
+        unique:true
       },
       menu:String,
     
